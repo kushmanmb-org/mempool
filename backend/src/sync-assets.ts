@@ -22,7 +22,7 @@ class SyncAssets {
 
   private async downloadFile$(url: string) {
     return new Promise((resolve, reject) => {
-      const fileName = url.split('/').slice(-1)[0];
+      const fileName = url.split('/').pop() || '';
 
       try {
         if (config.SOCKS5PROXY.ENABLED) {
