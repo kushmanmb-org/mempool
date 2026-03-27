@@ -4,7 +4,10 @@
       <input #searchInput (focus)="focus$.next($any($event).target.value)" (click)="click$.next($any($event).target.value)" formControlName="searchText" type="text" class="form-control" i18n-placeholder="search-form.searchbar-placeholder" placeholder="Explore the full Bitcoin ecosystem">
       <app-search-results #searchResults [hidden]="dropdownHidden" [results]="typeAhead$ | async" (selectedResult)="selectedResult($event)"></app-search-results>
     </div>
-    <div>
+    <div class="d-flex">
+      <button *ngIf="clipboardSupported" type="button" class="btn btn-secondary mr-2 paste-btn" (click)="pasteFromClipboard()" i18n-title="search-form.paste-address-title" title="Paste address from clipboard" i18n-aria-label="search-form.paste-address-aria-label" aria-label="Paste address from clipboard">
+        <fa-icon [icon]="['fas', 'clipboard']" [fixedWidth]="true"></fa-icon>
+      </button>
       <button [disabled]="isSearching" type="submit" class="btn btn-block btn-purple">
         <fa-icon *ngIf="!(isTypeaheading$ | async) else searchLoading" [icon]="['fas', 'search']" [fixedWidth]="true" i18n-title="search-form.search-title" title="Search"></fa-icon>
       </button>

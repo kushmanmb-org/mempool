@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, EventEmitter, Output, ViewChild, HostListener, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, Output, ViewChild, HostListener, ElementRef, Input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { EventType, NavigationStart, Router } from '@angular/router';
 import { AssetsService } from '@app/services/assets.service';
@@ -26,6 +26,7 @@ export class SearchFormComponent implements OnInit {
   pools: object[] = [];
   isSearching = false;
   isTypeaheading$ = new BehaviorSubject<boolean>(false);
+  clipboardSupported = typeof navigator !== 'undefined' && !!navigator.clipboard?.readText;
   typeAhead$: Observable<any>;
   searchForm: UntypedFormGroup;
   dropdownHidden = false;
@@ -65,7 +66,8 @@ export class SearchFormComponent implements OnInit {
     private electrsApiService: ElectrsApiService,
     private apiService: ApiService,
     private relativeUrlPipe: RelativeUrlPipe,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private cd: ChangeDetectorRef
   ) {
   }
 
@@ -309,6 +311,19 @@ export class SearchFormComponent implements OnInit {
     }
   }
 
+
+  async pasteFromClipboard(): Promise<void> {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        this.searchForm.patchValue({ searchText: text.trim() });
+        this.cd.markForCheck();
+        this.searchInput.nativeElement.focus();
+      }
+    } catch (error) {
+      console.error('Clipboard read failed:', error);
+    }
+  }
 
   navigate(url: string, searchText: string, extras?: any, swapNetwork?: string) {
     if (needBaseModuleChange(this.env.BASE_MODULE as 'liquid' | 'mempool', swapNetwork as Network)) {
