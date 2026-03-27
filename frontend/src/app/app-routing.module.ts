@@ -251,7 +251,7 @@ if (browserWindowEnv && browserWindowEnv.BASE_MODULE === 'liquid') {
         },
         {
           path: '**',
-          redirectTo: '/signet'
+          redirectTo: '/testnet'
         },
       ]
     },
